@@ -3,7 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script defer src="main.js"></script>
     <title>Tic Tac Toe</title>
   </head>
-  <body></body>
+  <body>
+    <section class="game-container">
+      <header>
+        <h3>Tic Tac Toe</h3>
+      </header>
+      <div id="game-field">
+        <div class="cell" id="0-0"></div>
+        <div class="cell" id="0-1"></div>
+        <div class="cell" id="0-2"></div>
+        <div class="cell" id="1-0"></div>
+        <div class="cell" id="1-1"></div>
+        <div class="cell" id="1-2"></div>
+        <div class="cell" id="2-0"></div>
+        <div class="cell" id="2-1"></div>
+        <div class="cell" id="2-2"></div>
+      </div>
+      <button id="new-game-btn" type="button">New Game</button>
+      <div id="game-over"></div>
+    </section>
+  </body>
 </html>
