@@ -93,6 +93,11 @@ function selectToken(event) {
 
     hideElement(tokenSelect);
   }
+
+  if (STATE.token === '0') {
+    STATE.token = STATE.token === 'X' ? '0' : 'X';
+    makeBotMove();
+  }
 }
 
 function initGameField() {
@@ -110,14 +115,16 @@ function isGameOver() {
 function handleCellClick(event) {
   if (event.target.nodeName === 'DIV' && event.target.textContent === '') {
     let winComb;
+    const [x, y] = event.target.id.split('-').map((id) => Number(id));
+
     STATE.moveNum += 1;
     event.target.textContent = STATE.token;
-    const [x, y] = event.target.id.split('-').map((id) => Number(id));
     STATE.cellValues[x][y] = STATE.token;
 
     if (STATE.moveNum >= 5) {
       [STATE.winner, winComb] = checkWinner();
     }
+
     if (isGameOver()) {
       if (winComb) {
         markComb(winComb);
@@ -126,7 +133,47 @@ function handleCellClick(event) {
       return;
     }
     STATE.token = STATE.token === 'X' ? '0' : 'X';
+
+    makeBotMove();
   }
+}
+
+function makeBotMove() {
+  let winComb;
+
+  STATE.moveNum += 1;
+
+  let [x, y] = generateRandomCoordinates();
+
+  while (STATE.cellValues[x][y]) {
+    [x, y] = generateRandomCoordinates();
+  }
+
+  STATE.cellValues[x][y] = STATE.token;
+  for (const cell of gameField.children) {
+    if (cell.id === `${x}-${y}`) {
+      cell.textContent = STATE.token;
+    }
+  }
+
+  if (STATE.moveNum >= 5) {
+    [STATE.winner, winComb] = checkWinner();
+  }
+
+  if (isGameOver()) {
+    if (winComb) {
+      markComb(winComb);
+    }
+    gameField.removeEventListener('click', handleCellClick);
+    return;
+  }
+  STATE.token = STATE.token === 'X' ? '0' : 'X';
+}
+
+function generateRandomCoordinates() {
+  let x = Math.floor(Math.random() * STATE.cellValues.length);
+  let y = Math.floor(Math.random() * STATE.cellValues.length);
+  return [x, y];
 }
 
 function checkWinner() {
