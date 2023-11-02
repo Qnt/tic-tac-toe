@@ -16,21 +16,26 @@
   <body>
     <section class="game-container">
       <header>
-        <h3>Tic Tac Toe</h3>
+        <h1>Tic Tac Toe</h1>
       </header>
-      <div id="game-field">
-        <div class="cell" id="0-0"></div>
-        <div class="cell" id="0-1"></div>
-        <div class="cell" id="0-2"></div>
-        <div class="cell" id="1-0"></div>
-        <div class="cell" id="1-1"></div>
-        <div class="cell" id="1-2"></div>
-        <div class="cell" id="2-0"></div>
-        <div class="cell" id="2-1"></div>
-        <div class="cell" id="2-2"></div>
+      <div class="game-and-token">
+        <div class="game-field">
+          <div id="0-0"></div>
+          <div id="0-1"></div>
+          <div id="0-2"></div>
+          <div id="1-0"></div>
+          <div id="1-1"></div>
+          <div id="1-2"></div>
+          <div id="2-0"></div>
+          <div id="2-1"></div>
+          <div id="2-2"></div>
+        </div>
+        <div class="token-select">
+          <button class="game-btn" id="X">X</button>
+          <button class="game-btn" id="0">0</button>
+        </div>
       </div>
-      <button id="new-game-btn" type="button">New Game</button>
-      <div id="game-over"></div>
+      <button id="new-game" class="game-btn new-game-btn">New Game</button>
     </section>
   </body>
 </html>
