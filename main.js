@@ -1,55 +1,14 @@
-const STATE = {
-  cellValues: [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ],
-  token: null,
-  winner: null,
-  moveNum: 0,
-};
+const STATE = {};
 
 const WIN_COMBS = [
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-  ],
-  [
-    [1, 0],
-    [1, 1],
-    [1, 2],
-  ],
-  [
-    [2, 0],
-    [2, 1],
-    [2, 2],
-  ],
-  [
-    [0, 0],
-    [1, 0],
-    [2, 0],
-  ],
-  [
-    [0, 1],
-    [1, 1],
-    [2, 1],
-  ],
-  [
-    [0, 2],
-    [1, 2],
-    [2, 2],
-  ],
-  [
-    [0, 0],
-    [1, 1],
-    [2, 2],
-  ],
-  [
-    [0, 2],
-    [1, 1],
-    [2, 0],
-  ],
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
 ];
 
 const gameField = document.getElementsByClassName('game-field')[0];
@@ -57,7 +16,7 @@ const tokenSelect = document.getElementsByClassName('token-select')[0];
 const newGameBtn = document.getElementById('new-game');
 
 newGameBtn.addEventListener('click', startNewGame);
-tokenSelect.addEventListener('click', selectToken);
+tokenSelect.addEventListener('click', handleTokenSelect);
 
 document.body.onload = startNewGame();
 
@@ -69,11 +28,7 @@ function startNewGame() {
 }
 
 function initState() {
-  STATE.cellValues = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
+  STATE.cellValues = new Array(9).fill(null);
   STATE.token = null;
   STATE.winner = null;
   STATE.moveNum = 0;
@@ -87,24 +42,19 @@ function hideElement(element) {
   element.classList.add('hide');
 }
 
-function selectToken(event) {
+function handleTokenSelect(event) {
   if (event.target.nodeName === 'BUTTON') {
     STATE.token = event.target.id;
 
     hideElement(tokenSelect);
-  }
-
-  if (STATE.token === '0') {
-    STATE.token = STATE.token === 'X' ? '0' : 'X';
-    makeBotMove();
   }
 }
 
 function initGameField() {
   for (const cell of gameField.children) {
     cell.classList.remove('win-mark');
-    const [x, y] = cell.id.split('-').map((id) => Number(id));
-    cell.textContent = STATE.cellValues[x][y];
+    const id = +cell.id;
+    cell.textContent = STATE.cellValues[id];
   }
 }
 
@@ -115,11 +65,11 @@ function isGameOver() {
 function handleCellClick(event) {
   if (event.target.nodeName === 'DIV' && event.target.textContent === '') {
     let winComb;
-    const [x, y] = event.target.id.split('-').map((id) => Number(id));
+    const id = +event.target.id;
 
     STATE.moveNum += 1;
     event.target.textContent = STATE.token;
-    STATE.cellValues[x][y] = STATE.token;
+    STATE.cellValues[id] = STATE.token;
 
     if (STATE.moveNum >= 5) {
       [STATE.winner, winComb] = checkWinner();
@@ -130,57 +80,16 @@ function handleCellClick(event) {
         markComb(winComb);
       }
       gameField.removeEventListener('click', handleCellClick);
-      return;
     }
     STATE.token = STATE.token === 'X' ? '0' : 'X';
-
-    makeBotMove();
   }
-}
-
-function makeBotMove() {
-  let winComb;
-
-  STATE.moveNum += 1;
-
-  let [x, y] = generateRandomCoordinates();
-
-  while (STATE.cellValues[x][y]) {
-    [x, y] = generateRandomCoordinates();
-  }
-
-  STATE.cellValues[x][y] = STATE.token;
-  for (const cell of gameField.children) {
-    if (cell.id === `${x}-${y}`) {
-      cell.textContent = STATE.token;
-    }
-  }
-
-  if (STATE.moveNum >= 5) {
-    [STATE.winner, winComb] = checkWinner();
-  }
-
-  if (isGameOver()) {
-    if (winComb) {
-      markComb(winComb);
-    }
-    gameField.removeEventListener('click', handleCellClick);
-    return;
-  }
-  STATE.token = STATE.token === 'X' ? '0' : 'X';
-}
-
-function generateRandomCoordinates() {
-  let x = Math.floor(Math.random() * STATE.cellValues.length);
-  let y = Math.floor(Math.random() * STATE.cellValues.length);
-  return [x, y];
 }
 
 function checkWinner() {
   for (const comb of WIN_COMBS) {
     const stack = [];
-    for (const [x, y] of comb) {
-      stack.push(STATE.cellValues[x][y]);
+    for (const id of comb) {
+      stack.push(STATE.cellValues[id]);
     }
     const uniq = stack.filter(
       (val, index, self) => self.indexOf(val) === index,
@@ -193,8 +102,8 @@ function checkWinner() {
 }
 
 function markComb(comb) {
-  for (const coordinates of comb) {
-    const winCell = document.getElementById(coordinates.join('-'));
+  for (const id of comb) {
+    const winCell = document.getElementById(`${id}`);
     winCell.classList.add('win-mark');
   }
 }
